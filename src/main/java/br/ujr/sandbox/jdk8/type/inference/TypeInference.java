@@ -7,6 +7,8 @@ public class TypeInference {
 		final Value<String> value = new Value<>();
 
 		System.out.println( value.getOrDefault("22", Value.defaultValue()) );
+		// Not necessary anymore
+		//System.out.println( value.getOrDefault("22", Value.<String>defaultValue()) );
 
 	}
 
