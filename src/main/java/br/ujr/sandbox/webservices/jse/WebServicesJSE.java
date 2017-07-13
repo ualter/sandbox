@@ -1,4 +1,4 @@
-package webservices.jse;
+package br.ujr.sandbox.webservices.jse;
 
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
