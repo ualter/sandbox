@@ -34,6 +34,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.RSAKeyProvider;
 
 public class JwtTokenApp {
 	
@@ -102,10 +103,15 @@ public class JwtTokenApp {
 	}
 	
 	private static DecodedJWT verifySignedJWT(WalletKeys walletKeys, String token) {
-		Algorithm algorithm = Algorithm.RSA256(
-				(RSAPublicKey)walletKeys.getPublicKey(), 
-				(RSAPrivateKey)walletKeys.getPrivateKey()
-		);
+//		Algorithm algorithm = Algorithm.RSA256(
+//				(RSAPublicKey)walletKeys.getPublicKey(), 
+//				(RSAPrivateKey)walletKeys.getPrivateKey()
+//		);
+		
+		RSAKeyProvider keyProvider = JwtTokenApp.providerForKeys((RSAPublicKey)walletKeys.getPublicKey());
+		
+		//Algorithm algorithm = Algorithm.RSA256((RSAPublicKey)walletKeys.getPublicKey());
+		Algorithm algorithm = Algorithm.RSA256(keyProvider);
 		
 		JWTVerifier verifier = JWT.require(algorithm)
 		                          .withIssuer("auth0")
@@ -126,6 +132,25 @@ public class JwtTokenApp {
 		sb.append("Message.....:").append(message).append("\n");
 		sb.append("Verify......:").append(verify).append("\n");
 		System.out.println(sb.toString());
+	}
+	
+	static RSAKeyProvider providerForKeys(final RSAPublicKey publicKey) {
+	    return new RSAKeyProvider() {
+	        @Override
+	        public RSAPublicKey getPublicKeyById(String keyId) {
+	            return publicKey;
+	        }
+
+	        @Override
+	        public RSAPrivateKey getPrivateKey() {
+	            return null;
+	        }
+
+	        @Override
+	        public String getPrivateKeyId() {
+	            return null;
+	        }
+	    };
 	}
 	
 	
